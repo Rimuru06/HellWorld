@@ -26,6 +26,7 @@ dificuldade.y = jogar.y + 100 + jogar.height/2 - dificuldade.height/2
 sair.y = dificuldade.y + 100 + dificuldade.height/2 - sair.height/2
 
 etapa_menu = 1
+nível_dificuldade = 1
 
 while True:
     if teclado.key_pressed("ESC"):
@@ -34,7 +35,6 @@ while True:
     if etapa_menu == 1:
         jogar = Sprite("botao_jogar.jpg", 1)
         dificuldade = Sprite("botao_dificuldade.jpg", 1)
-        ranking = Sprite("botao_ranking.jpg", 1)
         sair = Sprite("botao_sair.jpg", 1)
         jogar.x = janela.width/2 - jogar.width/2
         dificuldade.x = janela.width/2 - dificuldade.width/2
@@ -43,15 +43,12 @@ while True:
         dificuldade.y = jogar.y + 100 + jogar.height/2 - dificuldade.height/2
         sair.y = dificuldade.y + 100 + dificuldade.height/2 - sair.height/2
 
-        if mouse.is_over_area((jogar.x, jogar.y),(jogar.x + jogar.width, jogar.y + jogar.height)):
-            if mouse.is_button_pressed(1):
-                etapa_menu = 2
-        elif mouse.is_over_area((dificuldade.x, dificuldade.y),(dificuldade.x + dificuldade.width, dificuldade.y + dificuldade.height)):
-            if mouse.is_button_pressed(1):
-                etapa_menu = 3
-        elif mouse.is_over_area((sair.x, sair.y),(sair.x + sair.width, sair.y + sair.height)):
-            if mouse.is_button_pressed(1):
-                janela.close()
+        if (mouse.is_over_area((jogar.x, jogar.y),(jogar.x + jogar.width, jogar.y + jogar.height))) and (mouse.is_button_pressed(1)):
+            etapa_menu = 2
+        elif (mouse.is_over_area((dificuldade.x, dificuldade.y),(dificuldade.x + dificuldade.width, dificuldade.y + dificuldade.height))) and (mouse.is_button_pressed(1)):
+            etapa_menu = 3
+        elif (mouse.is_over_area((sair.x, sair.y),(sair.x + sair.width, sair.y + sair.height))) and (mouse.is_button_pressed(1)):
+            janela.close()
     
     if etapa_menu == 2:
         cenario = Sprite("cenario.jpg", 1)
@@ -71,24 +68,23 @@ while True:
         facil.x = janela.width/3 - facil.width/2
         medio.x = janela.width/3 - medio.width/2
         dificil.x = janela.width/3 - dificil.width/2
-        facil.y = jogar.y - facil.height/2
+        facil.y = janela.height/2 - facil.height/2
         medio.y = facil.y + 100 + facil.height/2 - medio.height/2
         dificil.y = medio.y + 100 + medio.height/2 - dificil.height/2
-        if mouse.is_over_area((facil.x, facil.y),(facil.x + facil.width, facil.y + facil.height)):
-            if mouse.is_button_pressed(1):
-                etapa_menu = 1
-        elif mouse.is_over_area((medio.x, medio.y),(medio.x + medio.width, medio.y + medio.height)):
-            if mouse.is_button_pressed(1):
-                etapa_menu = 1
-        elif mouse.is_over_area((dificil.x, ranking.y),(dificil.x + dificil.width, dificil.y + dificil.height)):
-            if mouse.is_button_pressed(1):
-                etapa_menu = 1
+        if (mouse.is_over_area((facil.x, facil.y),(facil.x + facil.width, facil.y + facil.height))) and (mouse.is_button_pressed(1)):
+            etapa_menu = 1
+            nível_dificuldade = 0.75
+        elif (mouse.is_over_area((medio.x, medio.y),(medio.x + medio.width, medio.y + medio.height))) and (mouse.is_button_pressed(1)):
+            etapa_menu = 1
+            nível_dificuldade = 1
+        elif (mouse.is_over_area((dificil.x, sair.y),(dificil.x + dificil.width, dificil.y + dificil.height))) and (mouse.is_button_pressed(1)):
+            etapa_menu = 1
+            nível_dificuldade = 1.5
 
     if etapa_menu == 1:
-        janela.draw_text("Hell World", janela.width/2 - 50, jogar.y + 200, 100, (255, 0, 0), "Arial", True, False)
+        janela.draw_text("Hell World", janela.width/2 - 180, jogar.y - 200, 80, (255, 0, 0), "Arial", True, False)
         jogar.draw()
         dificuldade.draw()
-        ranking.draw()
         sair.draw()
     if etapa_menu == 2:
         cenario.draw()
