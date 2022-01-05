@@ -12,18 +12,18 @@ mouse = Window.get_mouse()
 
 modulo = 1
 nivelDificuldade = 1
-etapaMenu = 1
-clickTimer = 0.0
+clickTimer = 0
 
 while True:
-    if teclado.key_pressed("ESC"):
-        modulo = 1
-        etapaMenu = 1
+    etapaMenu = 1
+    clickTimer += janela.delta_time()
     
-    if modulo == 1:
-        modulo, nivelDificuldade, etapaMenu = gameMenu(janela, teclado, mouse, modulo, nivelDificuldade, etapaMenu, clickTimer)
+    if (modulo == 1) and (clickTimer > 1):
+        modulo, nivelDificuldade, etapaMenu = gameMenu(janela, teclado, mouse, modulo, nivelDificuldade, etapaMenu)
+        clickTimer = 0
 
-    if modulo == 2:
-        inGame(janela, teclado, mouse, modulo, nivelDificuldade, clickTimer)
+    if (modulo == 2) and (clickTimer > 1):
+        modulo = inGame(janela, teclado, mouse, modulo, nivelDificuldade)
+        clickTimer = 0
 
     janela.update()
