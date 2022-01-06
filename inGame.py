@@ -14,7 +14,7 @@ def inGame(janela, teclado, mouse, modulo, nivelDificuldade):
      velPlayer = 200
      jump = False
      changeDJump = False
-     alturaJump = player.y - 1.5*player.height
+     alturaJump = player.y - 2.5*player.height
 
      while modulo == 2:
           if teclado.key_pressed("ESC"):
@@ -34,8 +34,9 @@ def inGame(janela, teclado, mouse, modulo, nivelDificuldade):
                     player.y += velPlayer*janela.delta_time()
           if player.y <= alturaJump:
                changeDJump = True
-          elif player.y >= chao.y - 1.5*player.height:
+          elif player.y + player.height >= chao.y:
                jump = False
+               changeDJump = False
           cenario.draw()
           chao.draw()
           player.draw()

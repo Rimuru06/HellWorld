@@ -22,7 +22,7 @@ def gameMenu(janela, teclado, mouse, modulo, nivelDificuldade, etapaMenu):
             jogar.y = janela.height/2 - jogar.height/2
             dificuldade.y = jogar.y + 100 + jogar.height/2 - dificuldade.height/2
             sair.y = dificuldade.y + 100 + dificuldade.height/2 - sair.height/2
-            if (mouse.is_over_area((jogar.x, jogar.y),(jogar.x + jogar.width, jogar.y + jogar.height))) and (mouse.is_button_pressed(1)):
+            if (mouse.is_over_area((jogar.x, jogar.y),(jogar.x + jogar.width, jogar.y + jogar.height))) and (mouse.is_button_pressed(1)) and (clickTimer > 1):
                 modulo = 2
                 clickTimer = 0
                 janela.clear()
