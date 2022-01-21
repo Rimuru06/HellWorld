@@ -9,14 +9,13 @@ def inGame(janela, teclado, mouse, modulo, nivelDificuldade):
      chao.y = cenario.height
      player = Animation("player_idle.png", 4, True)
      player.set_sequence_time(0, 3, 240)
-     zumbi = Sprite("zumbis.png", 1)
+     zumbi = Sprite("testezumbi.png", 1)
      chao.y = cenario.height
      player.x = 100
      player.y = chao.y - player.height
      playerx = 0
      playery = 0
      ativo = 0
-     olhando = 1
      apertou = False
      tempo = 0
      velPlayer = 200
@@ -65,13 +64,13 @@ def inGame(janela, teclado, mouse, modulo, nivelDificuldade):
                if ativo != 2:
                     playerx = player.x
                     playery = player.y
-                    player = Animation("player_run2.png", 12, True)
+                    player = Animation("player_run2.png", 10, True)
                     player.set_sequence_time(0, 9, 90)
                     player.x = playerx
                     player.y = playery
                     ativo = 2
 
-          if (teclado.key_pressed("SPACE")) and (jump == False):
+          if (teclado.key_pressed("UP")) and (jump == False):
                apertou = True
                jump = True
                changeDJump = False
