@@ -3,13 +3,12 @@ from PPlay.gameimage import *
 from PPlay.sprite import *
 from PPlay.animation import *
 
-def inGame(janela, teclado, mouse, modulo, nivelDificuldade):
-     cenario = Sprite("cenario.jpg", 1)
-     chao = Sprite("chao.jpg", 1)
+def fase2(janela, teclado, modulo, nivelDificuldade):
+     cenario = Sprite("", 1)
+     chao = Sprite("", 1)
      chao.y = cenario.height
      player = Animation("player_idle.png", 4, True)
      player.set_sequence_time(0, 3, 240)
-     zumbi = Sprite("testezumbi.png", 1)
      chao.y = cenario.height
      player.x = 100
      player.y = chao.y - player.height
@@ -17,7 +16,9 @@ def inGame(janela, teclado, mouse, modulo, nivelDificuldade):
      playery = 0
      ativo = 0
      apertou = False
-     tempo = 0
+     tempoTrocaSprite = 0
+     timerJump = 0
+     velJump = 400
      velPlayer = 200
      jump = False
      changeDJump = False
@@ -25,9 +26,9 @@ def inGame(janela, teclado, mouse, modulo, nivelDificuldade):
      fps = pygame.time.Clock()
 
      while modulo == 2:
-          tempo += janela.delta_time()
-          if tempo >= 0.6 and not apertou:
-               tempo = 0
+          tempoTrocaSprite += janela.delta_time()
+          if tempoTrocaSprite >= 0.6 and not apertou:
+               tempoTrocaSprite = 0
                if ativo == 2:
                     playerx = player.x
                     playery = player.y
@@ -75,11 +76,20 @@ def inGame(janela, teclado, mouse, modulo, nivelDificuldade):
                jump = True
                changeDJump = False
                alturaJump = player.y - player.height
+               timerJump = 0
+               velJump = 400
           if jump == True:
+               timerJump += janela.delta_time()
                if changeDJump == False:
-                    player.y -= velPlayer*janela.delta_time()
+                    player.y -= velJump*janela.delta_time()
+                    if timerJump > 0.01:
+                         velJump -= 10
+                         timerJump = 0
                if changeDJump == True:
-                    player.y += velPlayer*janela.delta_time()
+                    player.y += velJump*janela.delta_time()
+                    if timerJump > 0.01:
+                         velJump += 10
+                         timerJump = 0
           if player.y <= alturaJump:
                changeDJump = True
           elif player.y + player.height >= chao.y:
