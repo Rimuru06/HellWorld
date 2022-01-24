@@ -20,10 +20,16 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
      timerJump = 0
      velJump = 400
      velPlayer = 200
+     velTiro = 800
      jump = False
      changeDJump = False
      alturaJump = player.y - 2.5*player.height
      fps = pygame.time.Clock()
+     projeteisPlayerFrente = []
+     projeteisPlayerTras = []
+     playerVoltadoPraFrente = True
+     timerTiro = 0
+     playerAtirou = False
 
      while modulo == 2:
           tempoTrocaSprite += janela.delta_time()
@@ -59,6 +65,7 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     player.x = playerx
                     player.y = playery
                     ativo = 1
+                    playerVoltadoPraFrente = True
           elif teclado.key_pressed("LEFT"):
                apertou = True
                player.x -= velPlayer*janela.delta_time()
@@ -70,6 +77,7 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     player.x = playerx
                     player.y = playery
                     ativo = 2
+                    playerVoltadoPraFrente = False
 
           if (teclado.key_pressed("UP")) and (jump == False):
                apertou = True
@@ -95,6 +103,35 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
           elif player.y + player.height >= chao.y:
                jump = False
                changeDJump = False
+          
+          if (teclado.key_pressed("SPACE")) and (playerAtirou == False):
+               playerAtirou = True
+               if playerVoltadoPraFrente == True:
+                    tiroPlayer = Sprite("tiroPlayer.png", 1)
+                    tiroPlayer.y = player.y + 10
+                    tiroPlayer.x = player.x + player.width
+                    projeteisPlayerFrente.append(tiroPlayer)
+                    print("DEVIA ESTAR ATIRANDO PRA FRENTE")
+               elif playerVoltadoPraFrente == False:
+                    tiroPlayer = Sprite("tiroPlayer.png", 1)
+                    tiroPlayer.y = player.y + 10
+                    tiroPlayer.x = player.x
+                    projeteisPlayerTras.append(tiroPlayer)
+                    print("DEVIA ESTAR ATIRANDO PRA TRÁS")
+          
+          if playerAtirou == True:
+               timerTiro += janela.delta_time()
+               if timerTiro > 0.2:
+                    playerAtirou = False
+                    timerTiro = 0
+          
+          for t in range(len(projeteisPlayerFrente)-1, -1, -1):
+               projeteisPlayerFrente[t].x += velTiro*janela.delta_time()
+               projeteisPlayerFrente[t].draw()
+          
+          for t in range(len(projeteisPlayerTras)-1, -1, -1):
+               projeteisPlayerTras[t].x -= velTiro*janela.delta_time()
+               projeteisPlayerTras[t].draw()
 
           cenario.draw()
           chao.draw()
