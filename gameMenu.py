@@ -50,7 +50,7 @@ def gameMenu(janela, teclado, mouse, modulo, nivelDificuldade, etapaMenu):
                 clickTimer = 0
                 modulo = 1
                 etapaMenu = 1
-                nivelDificuldade = 0.75
+                nivelDificuldade = 0.5
             elif (mouse.is_over_area((medio.x, medio.y),(medio.x + medio.width, medio.y + medio.height))) and (mouse.is_button_pressed(1) and (clickTimer > 1)):
                 janela.clear()
                 clickTimer = 0
@@ -62,7 +62,7 @@ def gameMenu(janela, teclado, mouse, modulo, nivelDificuldade, etapaMenu):
                 clickTimer = 0
                 modulo = 1
                 etapaMenu = 1
-                nivelDificuldade = 1.5
+                nivelDificuldade = 3
             facil.draw()
             medio.draw()
             dificil.draw()
