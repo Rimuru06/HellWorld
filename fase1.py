@@ -22,7 +22,8 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
      velJump = 400
      velPlayer = 300
      velZumbi = 80
-     velTiro = 500
+     velFireDemon = 60
+     velTiro = 600
      jump = False
      changeDJump = False
      alturaJump = player.y - 3*player.height
@@ -36,6 +37,7 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
      vidasPlayer = 10
      listaZumbisEsquerda = []
      listaZumbisDireita = []
+     listaFireDemons = []
      playerMovimentar = True
      timerFase = 0
      timerSpwanZumbi = 0
@@ -141,7 +143,7 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                
                if playerAtirou == True:
                     timerTiro += janela.delta_time()
-                    if timerTiro > 0.2:
+                    if timerTiro > 0.25:
                          playerAtirou = False
                          timerTiro = 0
      
@@ -208,6 +210,30 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                if removerZumbi == True:
                     listaZumbisEsquerda.remove(listaZumbisEsquerda[z])
                     removerZumbi = False
+          for z in range(len(listaFireDemons)-1, -1, -1):
+               if listaFireDemons[z].y > player.y:
+                    listaFireDemons[z].y += velFireDemon*janela.delta_time()
+               else:
+                    if listaFireDemons[z].x < player.x:
+                         listaFireDemons[z].y += 10*velFireDemon*janela.delta_time()
+                    elif listaFireDemons[z].x > player.x:
+                         listaFireDemons[z].y -= 10*velFireDemon*janela.delta_time()
+               listaFireDemons[z].draw()
+               if (listaFireDemons[z].collided(player)) and (playerIntangivel == False):
+                    vidasPlayer -= 1
+                    playerIntangivel = True
+                    removerFireDemon = True
+               for t in range(len(projeteisPlayerFrente)-1, -1, -1):
+                    if listaFireDemons[z].collided(projeteisPlayerFrente[t]):
+                         projeteisPlayerFrente.remove(projeteisPlayerFrente[t])
+                         removerFireDemon = True
+               for t in range(len(projeteisPlayerTras)-1, -1, -1):
+                    if listaFireDemons[z].collided(projeteisPlayerTras[t]):
+                         projeteisPlayerTras.remove(projeteisPlayerTras[t])
+                         removerFireDemon = True
+               if removerFireDemon == True:
+                    listaFireDemons.remove(listaFireDemons[z])
+                    removerFireDemon = False
 
           if etapaFase == 1:
                if player.x > janela.width:
