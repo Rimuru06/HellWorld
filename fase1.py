@@ -25,7 +25,7 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
      velTiro = 500
      jump = False
      changeDJump = False
-     alturaJump = player.y - 2.5*player.height
+     alturaJump = player.y - 3*player.height
      fps = pygame.time.Clock()
      projeteisPlayerFrente = []
      projeteisPlayerTras = []
@@ -41,9 +41,13 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
      timerSpwanZumbi = 0
      faseAcabou = False
      random = 0
-     timerFimDaFase = 3
+     timerFimDaFase = 1
      playerMovendoDireita = False
      removerZumbi = False
+     playerIntangivel = False
+     timerIntangivel = 0
+     timerPiscando = 0
+     playerPiscar = 1
 
      while modulo == 2:
           tempoTrocaSprite += janela.delta_time()
@@ -101,7 +105,7 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     apertou = True
                     jump = True
                     changeDJump = False
-                    alturaJump = player.y - player.height
+                    alturaJump = player.y - 3*player.height
                     timerJump = 0
                     velJump = 400
                if jump == True:
@@ -109,7 +113,7 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     if changeDJump == False:
                          player.y -= velJump*janela.delta_time()
                          if timerJump > 0.01:
-                              velJump -= 10
+                              velJump -= 20
                               timerJump = 0
                     if changeDJump == True:
                          player.y += velJump*janela.delta_time()
@@ -157,6 +161,9 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
           for z in range(len(listaZumbisDireita)-1, -1, -1):
                listaZumbisDireita[z].x += velZumbi*janela.delta_time()
                listaZumbisDireita[z].draw()
+               if (listaZumbisDireita[z].collided(player)) and (playerIntangivel == False):
+                    vidasPlayer -= 1
+                    playerIntangivel = True
                for t in range(len(projeteisPlayerFrente)-1, -1, -1):
                     if listaZumbisDireita[z].collided(projeteisPlayerFrente[t]):
                          projeteisPlayerFrente.remove(projeteisPlayerFrente[t])
@@ -179,6 +186,9 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
           for z in range(len(listaZumbisEsquerda)-1, -1, -1): 
                listaZumbisEsquerda[z].x -= velZumbi*janela.delta_time()
                listaZumbisEsquerda[z].draw()
+               if (listaZumbisEsquerda[z].collided(player)) and (playerIntangivel == False):
+                    vidasPlayer -= 1
+                    playerIntangivel = True
                for t in range(len(projeteisPlayerFrente)-1, -1, -1):
                     if listaZumbisEsquerda[z].collided(projeteisPlayerFrente[t]):
                          projeteisPlayerFrente.remove(projeteisPlayerFrente[t])
@@ -187,7 +197,7 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     if listaZumbisEsquerda[z].collided(projeteisPlayerTras[t]):
                          projeteisPlayerTras.remove(projeteisPlayerTras[t])
                          removerZumbi = True
-               if listaZumbisEsquerda[z].x < 0 + listaZumbisEsquerda[z].width:
+               if listaZumbisEsquerda[z].x < 0:
                     zumbiy = listaZumbisEsquerda[z].y
                     zumbix = listaZumbisEsquerda[z].x
                     listaZumbisEsquerda.remove(listaZumbisEsquerda[z])
@@ -213,9 +223,10 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     timerSpwanZumbi = 0
                     timerFimDaFase = 0
           elif etapaFase == 2:
+               print("etapa 2")
                timerFase += janela.delta_time()
                timerSpwanZumbi += janela.delta_time()
-               if (etapaFase < 60) and (timerSpwanZumbi > 1/nivelDificuldade):
+               if (timerFase < 10) and (timerSpwanZumbi > 0.8/nivelDificuldade):
                     random = randint(1, 3)
                     timerSpwanZumbi = 0
                     if random == 1:
@@ -228,9 +239,10 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                          zumbi.y = chao.y - zumbi.height
                          zumbi.x = janela.width + zumbi.width
                          listaZumbisEsquerda.append(zumbi)
-               elif (etapaFase > 60) and (len(listaZumbisDireita==0)) and (len(listaZumbisEsquerda==0)):
+               elif (timerFase > 10) and (len(listaZumbisDireita)==0) and (len(listaZumbisEsquerda)==0):
                     timerFimDaFase += janela.delta_time()
-               if timerFimDaFase > 3:
+                    print(timerFimDaFase)
+               if timerFimDaFase > 0.5:
                     faseAcabou = True
                     playerMovimentar = False
                if faseAcabou == True:
@@ -239,19 +251,24 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     etapaFase = 2.5
                     player.x = 0 - player.width*1.5
           elif etapaFase == 2.5:
+               print("Entrou na etapa 2,5")
                playerMovendoDireita = True
                if player.x >= janela.width/2 - player.width:
-                    etapaFase = 2
+                    etapaFase = 3
                     playerMovimentar = True
                     timerFase = 0
                     timerSpwanZumbi = 0
                     timerFimDaFase = 0
+                    playerMovendoDireita = False
+                    faseAcabou = False
 
           elif etapaFase == 3:
+               print("Entrou na etapa 3")
                timerFase += janela.delta_time()
                timerSpwanZumbi += janela.delta_time()
-               if (etapaFase < 120) and (timerSpwanZumbi > 0.3/nivelDificuldade):
+               if (timerFase < 10) and (timerSpwanZumbi > 0.5/nivelDificuldade):
                     random = randint(1, 3)
+                    timerSpwanZumbi = 0
                     if random == 1:
                          zumbi = Sprite("zumbiDireita.png", 1)
                          zumbi.y = chao.y - zumbi.height
@@ -262,9 +279,9 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                          zumbi.y = chao.y - zumbi.height
                          zumbi.x = janela.width + zumbi.width
                          listaZumbisEsquerda.append(zumbi)
-               elif (etapaFase > 120) and (len(listaZumbisDireita==0)) and (len(listaZumbisEsquerda==0)):
+               elif (timerFase > 10) and (len(listaZumbisDireita)==0) and (len(listaZumbisEsquerda)==0):
                     timerFimDaFase += janela.delta_time()
-               if timerFimDaFase > 3:
+               if timerFimDaFase > 0.5:
                     faseAcabou = True
                     playerMovimentar = False
                if faseAcabou == True:
@@ -274,19 +291,24 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     player.x = 0 - player.width*1.5
 
           elif etapaFase == 3.5:
+               print("Entrou na etapa 3,5")
                playerMovendoDireita = True
                if player.x >= janela.width/2 - player.width:
-                    etapaFase = 2
+                    etapaFase = 4
                     playerMovimentar = True
                     timerFase = 0
                     timerSpwanZumbi = 0
                     timerFimDaFase = 0
+                    playerMovendoDireita = False
+                    faseAcabou = False
 
           elif etapaFase == 4:
+               print("Entrou na etapa 4")
                timerFase += janela.delta_time()
                timerSpwanZumbi += janela.delta_time()
-               if (etapaFase < 180) and (timerSpwanZumbi > 0.1/nivelDificuldade):
+               if (timerFase < 10) and (timerSpwanZumbi > 0.3/nivelDificuldade):
                     random = randint(1, 3)
+                    timerSpwanZumbi = 0
                     if random == 1:
                          zumbi = Sprite("zumbiDireita.png", 1)
                          zumbi.y = chao.y - zumbi.height
@@ -297,9 +319,9 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                          zumbi.y = chao.y - zumbi.height
                          zumbi.x = janela.width + zumbi.width
                          listaZumbisEsquerda.append(zumbi)
-               elif (etapaFase > 180) and (len(listaZumbisDireita==0)) and (len(listaZumbisEsquerda==0)):
+               elif (timerFase > 10) and (len(listaZumbisDireita)==0) and (len(listaZumbisEsquerda)==0):
                     timerFimDaFase += janela.delta_time()
-               if timerFimDaFase > 3:
+               if timerFimDaFase > 0.5:
                     faseAcabou = True
                     playerMovimentar = False
                if faseAcabou == True:
@@ -309,6 +331,7 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     player.x = 0 - player.width*1.5
 
           elif etapaFase == 4.5:
+               print("Entrou na etapa 4,5")
                playerMovendoDireita = True
                if player.x >= janela.width/2 - player.width:
                     etapaFase = 2
@@ -316,10 +339,23 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     timerFase = 0
                     timerSpwanZumbi = 0
                     timerFimDaFase = 0
+                    playerMovendoDireita = False
+                    faseAcabou = False
+          
+          if playerIntangivel == True:
+               timerIntangivel += janela.delta_time()
+               timerPiscando += janela.delta_time()
+               if timerPiscando > 0.01:
+                    playerPiscar *= -1
+                    timerPiscando = 0
+               if timerIntangivel > 2:
+                    playerIntangivel = False
+                    playerIntangivel = 0
 
-
-          player.draw()
+          if (playerPiscar == 1) or (playerIntangivel == False):
+               player.draw()
           janela.draw_text("Vidas: " + str(vidasPlayer), 10, janela.height - 70, 30, (255, 0, 0), "Arial", True, False)
+          print(vidasPlayer)
           player.update()
           janela.update()
           fps.tick(60)
