@@ -62,7 +62,7 @@ def gameMenu(janela, teclado, mouse, modulo, nivelDificuldade, etapaMenu):
                 clickTimer = 0
                 modulo = 1
                 etapaMenu = 1
-                nivelDificuldade = 3
+                nivelDificuldade = 1.25
             facil.draw()
             medio.draw()
             dificil.draw()

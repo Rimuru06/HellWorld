@@ -121,23 +121,6 @@ def fase2(janela, teclado, modulo, nivelDificuldade, vidasPlayer):
                     alturaJump = player.y - 3*player.height
                     timerJump = 0
                     velJump = 400
-               if jump == True:
-                    timerJump += janela.delta_time()
-                    if changeDJump == False:
-                         player.y -= velJump*janela.delta_time()
-                         if timerJump > 0.01:
-                              velJump -= 20
-                              timerJump = 0
-                    if changeDJump == True:
-                         player.y += velJump*janela.delta_time()
-                         if timerJump > 0.01:
-                              velJump += 10
-                              timerJump = 0
-               if player.y <= alturaJump:
-                    changeDJump = True
-               elif player.y + player.height >= chao.y:
-                    jump = False
-                    changeDJump = False
                
                if (teclado.key_pressed("SPACE")) and (playerAtirou == False):
                     playerAtirou = True
@@ -157,6 +140,23 @@ def fase2(janela, teclado, modulo, nivelDificuldade, vidasPlayer):
                     if timerTiro > 0.25:
                          playerAtirou = False
                          timerTiro = 0
+          if jump == True:
+               timerJump += janela.delta_time()
+               if changeDJump == False:
+                    player.y -= velJump*janela.delta_time()
+                    if timerJump > 0.01:
+                         velJump -= 20
+                         timerJump = 0
+               if changeDJump == True:
+                    player.y += velJump*janela.delta_time()
+                    if timerJump > 0.01:
+                         velJump += 10
+                         timerJump = 0
+          if player.y <= alturaJump:
+               changeDJump = True
+          elif player.y + player.height >= chao.y:
+               jump = False
+               changeDJump = False
      
           cenario.draw()
           chao.draw()
@@ -277,7 +277,7 @@ def fase2(janela, teclado, modulo, nivelDificuldade, vidasPlayer):
                     listaFireBall.remove(listaFireBall[z])
                     removerFireBall = False
           
-          if belfegor.collided(player):
+          if (belfegor.collided(player)) and (playerIntangivel == False):
                vidasPlayer -= 1
                playerIntangivel = True
 

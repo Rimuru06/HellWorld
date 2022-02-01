@@ -111,23 +111,6 @@ def fase1(janela, teclado, modulo, nivelDificuldade, vidasPlayer):
                     alturaJump = player.y - 3*player.height
                     timerJump = 0
                     velJump = 400
-               if jump == True:
-                    timerJump += janela.delta_time()
-                    if changeDJump == False:
-                         player.y -= velJump*janela.delta_time()
-                         if timerJump > 0.01:
-                              velJump -= 20
-                              timerJump = 0
-                    if changeDJump == True:
-                         player.y += velJump*janela.delta_time()
-                         if timerJump > 0.01:
-                              velJump += 10
-                              timerJump = 0
-               if player.y <= alturaJump:
-                    changeDJump = True
-               elif player.y + player.height >= chao.y:
-                    jump = False
-                    changeDJump = False
                
                if (teclado.key_pressed("SPACE")) and (playerAtirou == False):
                     playerAtirou = True
@@ -147,6 +130,23 @@ def fase1(janela, teclado, modulo, nivelDificuldade, vidasPlayer):
                     if timerTiro > 0.25:
                          playerAtirou = False
                          timerTiro = 0
+          if jump == True:
+               timerJump += janela.delta_time()
+               if changeDJump == False:
+                    player.y -= velJump*janela.delta_time()
+                    if timerJump > 0.01:
+                         velJump -= 20
+                         timerJump = 0
+               if changeDJump == True:
+                    player.y += velJump*janela.delta_time()
+                    if timerJump > 0.01:
+                         velJump += 10
+                         timerJump = 0
+          if player.y <= alturaJump:
+               changeDJump = True
+          elif player.y + player.height >= chao.y:
+               jump = False
+               changeDJump = False
      
           cenario.draw()
           chao.draw()
@@ -366,17 +366,14 @@ def fase1(janela, teclado, modulo, nivelDificuldade, vidasPlayer):
                     random1 = randint(1,4)
                     fireDemon = Sprite("fireDemon.png", 1)
                     if random1 == 1:
-                         print("Fire demon 1")
                          random2 = randint(0, int(player.y))
                          fireDemon.x = 0 - fireDemon.width
                          fireDemon.y = random2
                     elif random1 == 2:
-                         print("Fire demon 2")
                          random2 = randint(-50, janela.width+1)
                          fireDemon.y = 0 - fireDemon.height
                          fireDemon.x = random2
                     elif random1 == 3:
-                         print("Fire demon 3")
                          random2 = randint(0, int(player.y))
                          fireDemon.x = janela.width
                          fireDemon.y = random2
