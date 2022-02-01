@@ -11,7 +11,7 @@ janela.set_title("Hell World")
 teclado = Window.get_keyboard()
 mouse = Window.get_mouse()
 
-modulo = 1
+modulo = 3
 nivelDificuldade = 1
 
 while True:

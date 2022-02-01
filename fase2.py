@@ -296,15 +296,15 @@ def fase2(janela, teclado, modulo, nivelDificuldade):
           if (timerFase > 1) and (fim == False):
                timerSpwanZumbi += janela.delta_time()
                timerSpwanFireDemon += janela.delta_time()
-               if timerSpwanZumbi > 0.3/nivelDificuldade:
-                    random = randint(1, 5)
+               if timerSpwanZumbi > 0.8/nivelDificuldade:
+                    random = randint(1, 4)
                     timerSpwanZumbi = 0
-                    if random == 4:
+                    if random == 3:
                          zumbi = Sprite("zumbiDireita.png", 1)
                          zumbi.y = chao.y - zumbi.height
                          zumbi.x = 0 - zumbi.width
                          listaZumbisDireita.append(zumbi)
-                    elif random <= 3:
+                    elif random <= 2:
                          zumbi = Sprite("zumbiEsquerda.png", 1)
                          zumbi.y = chao.y - zumbi.height
                          zumbi.x = janela.width + zumbi.width
