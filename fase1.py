@@ -22,7 +22,7 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
      velJump = 400
      velPlayer = 300
      velZumbi = 80
-     velFireDemon = 60
+     velFireDemon = 100
      velTiro = 600
      jump = False
      changeDJump = False
@@ -257,10 +257,9 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     timerSpwanZumbi = 0
                     timerFimDaFase = 0
           elif etapaFase == 2:
-               print("etapa 2")
                timerFase += janela.delta_time()
                timerSpwanZumbi += janela.delta_time()
-               if (timerFase < 10) and (timerSpwanZumbi > 0.8/nivelDificuldade):
+               if (timerFase < 60) and (timerSpwanZumbi > 0.3/nivelDificuldade):
                     random = randint(1, 3)
                     timerSpwanZumbi = 0
                     if random == 1:
@@ -273,9 +272,8 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                          zumbi.y = chao.y - zumbi.height
                          zumbi.x = janela.width + zumbi.width
                          listaZumbisEsquerda.append(zumbi)
-               elif (timerFase > 10) and (len(listaZumbisDireita)==0) and (len(listaZumbisEsquerda)==0):
+               elif (timerFase > 60) and (len(listaZumbisDireita)==0) and (len(listaZumbisEsquerda)==0):
                     timerFimDaFase += janela.delta_time()
-                    print(timerFimDaFase)
                if timerFimDaFase > 0.5:
                     faseAcabou = True
                     playerMovimentar = False
@@ -286,7 +284,6 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     player.x = 0 - player.width*1.5
                     janela.clear()
           elif etapaFase == 2.5:
-               print("Entrou na etapa 2,5")
                playerMovendoDireita = True
                if player.x >= janela.width/2 - player.width:
                     etapaFase = 3
@@ -297,13 +294,11 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     timerFimDaFase = 0
                     playerMovendoDireita = False
                     faseAcabou = False
-
           elif etapaFase == 3:
-               print("Entrou na etapa 3")
                timerFase += janela.delta_time()
                timerSpwanZumbi += janela.delta_time()
                timerSpwanFireDemon += janela.delta_time()
-               if (timerFase < 10) and (timerSpwanZumbi > 0.5/nivelDificuldade):
+               if (timerFase < 120) and (timerSpwanZumbi > 0.2/nivelDificuldade):
                     random = randint(1, 3)
                     timerSpwanZumbi = 0
                     if random == 1:
@@ -316,7 +311,7 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                          zumbi.y = chao.y - zumbi.height
                          zumbi.x = janela.width + zumbi.width
                          listaZumbisEsquerda.append(zumbi)
-               elif (timerFase < 10) and (timerSpwanFireDemon > 1/nivelDificuldade):
+               elif (timerFase < 120) and (timerSpwanFireDemon > 1/nivelDificuldade):
                     timerSpwanFireDemon = 0
                     random = randint(0, janela.width-50)
                     fireDemon = Sprite("fireDemon.png", 1)
@@ -336,7 +331,6 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     janela.clear()
 
           elif etapaFase == 3.5:
-               print("Entrou na etapa 3,5")
                playerMovendoDireita = True
                if player.x >= janela.width/2 - player.width:
                     etapaFase = 4
@@ -350,11 +344,10 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                     faseAcabou = False
 
           elif etapaFase == 4:
-               print("Entrou na etapa 4")
                timerFase += janela.delta_time()
                timerSpwanZumbi += janela.delta_time()
                timerSpwanFireDemon += janela.delta_time()
-               if (timerFase < 10) and (timerSpwanZumbi > 0.3/nivelDificuldade):
+               if (timerFase < 180) and (timerSpwanZumbi > 0.05/nivelDificuldade):
                     random = randint(1, 3)
                     timerSpwanZumbi = 0
                     if random == 1:
@@ -367,7 +360,7 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                          zumbi.y = chao.y - zumbi.height
                          zumbi.x = janela.width + zumbi.width
                          listaZumbisEsquerda.append(zumbi)
-               elif (timerFase < 10) and (timerSpwanFireDemon > 0.5/nivelDificuldade):
+               elif (timerFase < 180) and (timerSpwanFireDemon > 0.5/nivelDificuldade):
                     timerSpwanFireDemon = 0
                     random = randint(0, janela.width-50)
                     fireDemon = Sprite("fireDemon.png", 1)

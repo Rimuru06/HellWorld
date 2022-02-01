@@ -4,11 +4,17 @@ from PPlay.sprite import *
 from PPlay.animation import *
 from random import randint
 
-def fase1(janela, teclado, modulo, nivelDificuldade):
+def fase2(janela, teclado, modulo, nivelDificuldade):
      cenario = Sprite("cenario.jpg", 1)
      chao = Sprite("chao.jpg", 1)
      chao.y = cenario.height
      player = Animation("player_idle.png", 4, True)
+     belfegor = Sprite("belfegor.png", 1)
+     belfegor.y = chao.y - belfegor.height
+     belfegorPrimeiraPosicao = janela.width - belfegor.width*1.5
+     belfegorSegundaPosicao = janela.width - belfegor.width
+     belfegorPraFrente = True
+     belfegor.x = belfegorSegundaPosicao
      player.set_sequence_time(0, 3, 240)
      chao.y = cenario.height
      player.x = 100
@@ -22,7 +28,7 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
      velJump = 400
      velPlayer = 300
      velZumbi = 80
-     velFireDemon = 60
+     velFireDemon = 100
      velTiro = 600
      jump = False
      changeDJump = False
@@ -33,18 +39,18 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
      playerVoltadoPraFrente = True
      timerTiro = 0
      playerAtirou = False
-     etapaFase = 1
      vidasPlayer = 10
+     vidasBelfegor = 100
      listaZumbisEsquerda = []
      listaZumbisDireita = []
      listaFireDemons = []
+     listaFireBall = []
      playerMovimentar = True
      timerFase = 0
      timerSpwanZumbi = 0
      timerSpwanFireDemon = 0
-     faseAcabou = False
+     timerSpwanFireBall = 0
      random = 0
-     timerFimDaFase = 1
      playerMovendoDireita = False
      removerZumbi = False
      playerIntangivel = False
@@ -52,8 +58,11 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
      timerPiscando = 0
      playerPiscar = 1
      removerFireDemon = False
+     removerFireBall = False
+     removerTiro = False
+     fim = False
 
-     while modulo == 2:
+     while modulo == 3:
           tempoTrocaSprite += janela.delta_time()
           if playerMovendoDireita == True:
                apertou = True
@@ -156,7 +165,13 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                projeteisPlayerFrente[t].draw()
                projeteisPlayerFrente[t].x += velTiro*janela.delta_time()
                if projeteisPlayerFrente[t].x > janela.width:
-                    projeteisPlayerFrente.remove(projeteisPlayerFrente[t])     
+                    removerTiro = True
+               elif projeteisPlayerFrente[t].collided(belfegor):
+                    removerTiro = True
+                    vidasBelfegor -= 1
+               if removerTiro == True:
+                    removerTiro = False
+                    projeteisPlayerFrente.remove(projeteisPlayerFrente[t])
           for t in range(len(projeteisPlayerTras)-1, -1, -1):
                projeteisPlayerTras[t].draw()
                projeteisPlayerTras[t].x -= velTiro*janela.delta_time()
@@ -241,149 +256,84 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
                if removerFireDemon == True:
                     listaFireDemons.remove(listaFireDemons[z])
                     removerFireDemon = False
+          for z in range(len(listaFireBall)-1, -1, -1):
+               listaFireBall[z].draw()
+               listaFireBall[z].x -= 20*velFireDemon*janela.delta_time()
+               if (listaFireBall[z].collided(player)) and (playerIntangivel == False):
+                    vidasPlayer -= 1
+                    playerIntangivel = True
+                    removerFireBall = True
+               if listaFireBall[z].x + listaFireBall[z].width < 0:
+                    removerFireBall = True
+               for t in range(len(projeteisPlayerFrente)-1, -1, -1):
+                    if listaFireBall[z].collided(projeteisPlayerFrente[t]):
+                         projeteisPlayerFrente.remove(projeteisPlayerFrente[t])
+                         removerFireBall = True
+               for t in range(len(projeteisPlayerTras)-1, -1, -1):
+                    if listaFireBall[z].collided(projeteisPlayerTras[t]):
+                         projeteisPlayerTras.remove(projeteisPlayerTras[t])
+                         removerFireBall = True
+               if removerFireBall == True:
+                    listaFireBall.remove(listaFireBall[z])
+                    removerFireBall = False
+          
+          if belfegor.collided(player):
+               vidasPlayer -= 1
+               playerIntangivel = True
 
-          if etapaFase == 1:
-               if player.x > janela.width:
-                    etapaFase = 1.5
-                    player.x = 0 - player.width*3
-                    playerMovimentar = False
-                    janela.clear()
-          elif etapaFase == 1.5:
-               playerMovendoDireita = True
-               if player.x >= janela.width/2 - player.width:
-                    etapaFase = 2
-                    playerMovimentar = True
-                    timerFase = 0
-                    timerSpwanZumbi = 0
-                    timerFimDaFase = 0
-          elif etapaFase == 2:
-               print("etapa 2")
-               timerFase += janela.delta_time()
-               timerSpwanZumbi += janela.delta_time()
-               if (timerFase < 10) and (timerSpwanZumbi > 0.8/nivelDificuldade):
-                    random = randint(1, 3)
-                    timerSpwanZumbi = 0
-                    if random == 1:
-                         zumbi = Sprite("zumbiDireita.png", 1)
-                         zumbi.y = chao.y - zumbi.height
-                         zumbi.x = 0 - zumbi.width
-                         listaZumbisDireita.append(zumbi)
-                    elif random == 2:
-                         zumbi = Sprite("zumbiEsquerda.png", 1)
-                         zumbi.y = chao.y - zumbi.height
-                         zumbi.x = janela.width + zumbi.width
-                         listaZumbisEsquerda.append(zumbi)
-               elif (timerFase > 10) and (len(listaZumbisDireita)==0) and (len(listaZumbisEsquerda)==0):
-                    timerFimDaFase += janela.delta_time()
-                    print(timerFimDaFase)
-               if timerFimDaFase > 0.5:
-                    faseAcabou = True
-                    playerMovimentar = False
-               if faseAcabou == True:
-                    playerMovendoDireita = True
-               if (faseAcabou == True) and (player.x > janela.width):
-                    etapaFase = 2.5
-                    player.x = 0 - player.width*1.5
-                    janela.clear()
-          elif etapaFase == 2.5:
-               print("Entrou na etapa 2,5")
-               playerMovendoDireita = True
-               if player.x >= janela.width/2 - player.width:
-                    etapaFase = 3
-                    playerMovimentar = True
-                    timerFase = 0
-                    timerSpwanZumbi = 0
-                    timerSpwanFireDemon = 0
-                    timerFimDaFase = 0
-                    playerMovendoDireita = False
-                    faseAcabou = False
+          if belfegorPraFrente == True:
+               belfegor.x -= velFireDemon*janela.delta_time()
+          else:
+               belfegor.x += velFireDemon*janela.delta_time()
 
-          elif etapaFase == 3:
-               print("Entrou na etapa 3")
-               timerFase += janela.delta_time()
+          if belfegor.x > belfegorSegundaPosicao:
+               belfegorPraFrente = True
+          if belfegor.x < belfegorPrimeiraPosicao:
+               belfegorPraFrente = False
+
+          timerFase += janela.delta_time()
+
+          if (timerFase > 1) and (fim == False):
                timerSpwanZumbi += janela.delta_time()
                timerSpwanFireDemon += janela.delta_time()
-               if (timerFase < 10) and (timerSpwanZumbi > 0.5/nivelDificuldade):
-                    random = randint(1, 3)
+               if timerSpwanZumbi > 0.3/nivelDificuldade:
+                    random = randint(1, 5)
                     timerSpwanZumbi = 0
-                    if random == 1:
+                    if random == 4:
                          zumbi = Sprite("zumbiDireita.png", 1)
                          zumbi.y = chao.y - zumbi.height
                          zumbi.x = 0 - zumbi.width
                          listaZumbisDireita.append(zumbi)
-                    elif random == 2:
+                    elif random <= 3:
                          zumbi = Sprite("zumbiEsquerda.png", 1)
                          zumbi.y = chao.y - zumbi.height
                          zumbi.x = janela.width + zumbi.width
                          listaZumbisEsquerda.append(zumbi)
-               elif (timerFase < 10) and (timerSpwanFireDemon > 1/nivelDificuldade):
+               elif timerSpwanFireDemon > 1.5/nivelDificuldade:
                     timerSpwanFireDemon = 0
                     random = randint(0, janela.width-50)
                     fireDemon = Sprite("fireDemon.png", 1)
                     fireDemon.y = 0 - fireDemon.height
                     fireDemon.x = random
                     listaFireDemons.append(fireDemon)
-               elif (timerFase > 10) and (len(listaZumbisDireita)==0) and (len(listaZumbisEsquerda)==0) and (len(listaFireDemons)==0):
-                    timerFimDaFase += janela.delta_time()
-               if timerFimDaFase > 0.5:
-                    faseAcabou = True
-                    playerMovimentar = False
-               if faseAcabou == True:
-                    playerMovendoDireita = True
-               if (faseAcabou == True) and (player.x > janela.width):
-                    etapaFase = 3.5
-                    player.x = 0 - player.width*1.5
-                    janela.clear()
+               elif timerSpwanFireBall > 0.8/nivelDificuldade:
+                    timerSpwanFireDemon = 0
+                    fireBall = Sprite("fireBall.png", 1)
+                    fireDemon.y = chao.y - player.height
+                    fireDemon.x = belfegor.x + belfegor.width/2
+                    listaFireBall.append(fireBall)
+          
+          if fim == True:
+               listaZumbisEsquerda = []
+               listaZumbisDireita = []
+               listaFireDemons = []
+               listaFireBall = []
 
-          elif etapaFase == 3.5:
-               print("Entrou na etapa 3,5")
-               playerMovendoDireita = True
-               if player.x >= janela.width/2 - player.width:
-                    etapaFase = 4
-                    playerMovimentar = True
-                    timerFase = 0
-                    timerSpwanZumbi = 0
-                    timerSpwanFireDemon = 0
-                    timerSpwanFireDemon = 0
-                    timerFimDaFase = 0
-                    playerMovendoDireita = False
-                    faseAcabou = False
+          if vidasBelfegor == 0:
+               vidasBelfegor -= 1
+               fim = True
+               timerFase = 0
 
-          elif etapaFase == 4:
-               print("Entrou na etapa 4")
-               timerFase += janela.delta_time()
-               timerSpwanZumbi += janela.delta_time()
-               timerSpwanFireDemon += janela.delta_time()
-               if (timerFase < 10) and (timerSpwanZumbi > 0.3/nivelDificuldade):
-                    random = randint(1, 3)
-                    timerSpwanZumbi = 0
-                    if random == 1:
-                         zumbi = Sprite("zumbiDireita.png", 1)
-                         zumbi.y = chao.y - zumbi.height
-                         zumbi.x = 0 - zumbi.width
-                         listaZumbisDireita.append(zumbi)
-                    elif random == 2:
-                         zumbi = Sprite("zumbiEsquerda.png", 1)
-                         zumbi.y = chao.y - zumbi.height
-                         zumbi.x = janela.width + zumbi.width
-                         listaZumbisEsquerda.append(zumbi)
-               elif (timerFase < 10) and (timerSpwanFireDemon > 0.5/nivelDificuldade):
-                    timerSpwanFireDemon = 0
-                    random = randint(0, janela.width-50)
-                    fireDemon = Sprite("fireDemon.png", 1)
-                    fireDemon.y = 0 - fireDemon.height
-                    fireDemon.x = random
-                    listaFireDemons.append(fireDemon)
-               elif (timerFase > 10) and (len(listaZumbisDireita)==0) and (len(listaZumbisEsquerda)==0) and (len(listaFireDemons)==0):
-                    timerFimDaFase += janela.delta_time()
-               if timerFimDaFase > 0.5:
-                    faseAcabou = True
-                    playerMovimentar = False
-               if faseAcabou == True:
-                    playerMovendoDireita = True
-               if (faseAcabou == True) and (player.x > janela.width):
-                    modulo = 3
-                    janela.clear()
           
           if playerIntangivel == True:
                timerIntangivel += janela.delta_time()
@@ -397,8 +347,15 @@ def fase1(janela, teclado, modulo, nivelDificuldade):
 
           if (playerPiscar == 1) or (playerIntangivel == False):
                player.draw()
+          belfegor.draw()
           janela.draw_text("Vidas: " + str(vidasPlayer), 10, janela.height - 70, 30, (255, 0, 0), "Arial", True, False)
+          if fim == False:
+               janela.draw_text("Belfegor: " + str(vidasBelfegor), janela.width/2, 70, 60, (255, 0, 0), "Arial", True, False)
           player.update()
+          if (timerFase > 1.5) and (fim == True):
+               janela.draw_text("Parabéns por derrotar Belfegor!\nObrigado por jogar\nPor favor aperte enter", 200, janela.height/3, 20, (255, 0, 0), "Arial", True, False)
+               if teclado.key_pressed("ENTER"):
+                    modulo = 1
           janela.update()
           fps.tick(60)
 
