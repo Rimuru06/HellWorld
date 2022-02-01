@@ -4,7 +4,7 @@ from PPlay.sprite import *
 from PPlay.animation import *
 from random import randint
 
-def fase2(janela, teclado, modulo, nivelDificuldade):
+def fase2(janela, teclado, modulo, nivelDificuldade, vidasPlayer):
      cenario = Sprite("cenario.jpg", 1)
      chao = Sprite("chao.jpg", 1)
      chao.y = cenario.height
@@ -39,7 +39,6 @@ def fase2(janela, teclado, modulo, nivelDificuldade):
      playerVoltadoPraFrente = True
      timerTiro = 0
      playerAtirou = False
-     vidasPlayer = 10
      vidasBelfegor = 100
      listaZumbisEsquerda = []
      listaZumbisDireita = []
@@ -61,6 +60,7 @@ def fase2(janela, teclado, modulo, nivelDificuldade):
      removerFireBall = False
      removerTiro = False
      fim = False
+     vidasPlayer += 1
 
      while modulo == 3:
           tempoTrocaSprite += janela.delta_time()
@@ -296,6 +296,7 @@ def fase2(janela, teclado, modulo, nivelDificuldade):
           if (timerFase > 1) and (fim == False):
                timerSpwanZumbi += janela.delta_time()
                timerSpwanFireDemon += janela.delta_time()
+               timerSpwanFireBall += janela.delta_time()
                if timerSpwanZumbi > 0.8/nivelDificuldade:
                     random = randint(1, 4)
                     timerSpwanZumbi = 0
@@ -316,11 +317,11 @@ def fase2(janela, teclado, modulo, nivelDificuldade):
                     fireDemon.y = 0 - fireDemon.height
                     fireDemon.x = random
                     listaFireDemons.append(fireDemon)
-               elif timerSpwanFireBall > 0.8/nivelDificuldade:
-                    timerSpwanFireDemon = 0
+               elif timerSpwanFireBall > 3/nivelDificuldade:
+                    timerSpwanFireBall = 0
                     fireBall = Sprite("fireBall.png", 1)
-                    fireDemon.y = chao.y - player.height
-                    fireDemon.x = belfegor.x + belfegor.width/2
+                    fireBall.y = chao.y - player.height
+                    fireBall.x = belfegor.x + belfegor.width/2
                     listaFireBall.append(fireBall)
           
           if fim == True:
@@ -343,7 +344,7 @@ def fase2(janela, teclado, modulo, nivelDificuldade):
                     timerPiscando = 0
                if timerIntangivel > 2:
                     playerIntangivel = False
-                    playerIntangivel = 0
+                    timerIntangivel = 0
 
           if (playerPiscar == 1) or (playerIntangivel == False):
                player.draw()
@@ -353,7 +354,9 @@ def fase2(janela, teclado, modulo, nivelDificuldade):
                janela.draw_text("Belfegor: " + str(vidasBelfegor), janela.width/2, 70, 60, (255, 0, 0), "Arial", True, False)
           player.update()
           if (timerFase > 1.5) and (fim == True):
-               janela.draw_text("Parabéns por derrotar Belfegor!\nObrigado por jogar\nPor favor aperte enter", 200, janela.height/3, 20, (255, 0, 0), "Arial", True, False)
+               janela.draw_text("Parabéns por derrotar Belfegor", 200, janela.height/3, 60, (255, 0, 0), "Arial", True, False)
+               janela.draw_text("Obrigado por jogar", 200, janela.height/3 + 60, 60, (255, 0, 0), "Arial", True, False)
+               janela.draw_text("Por favor aperte enter", 200, janela.height/3 + 120, 60, (255, 0, 0), "Arial", True, False)
                if teclado.key_pressed("ENTER"):
                     modulo = 1
           janela.update()
