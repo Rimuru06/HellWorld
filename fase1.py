@@ -363,11 +363,23 @@ def fase1(janela, teclado, modulo, nivelDificuldade, vidasPlayer):
                          listaZumbisEsquerda.append(zumbi)
                elif (timerFase < 60) and (timerSpwanFireDemon > 0.8/nivelDificuldade):
                     timerSpwanFireDemon = 0
-                    random1 = randint(0, janela.width-50)
-                    random2 = randint(0, int(player.y))
+                    random1 = randint(1,4)
                     fireDemon = Sprite("fireDemon.png", 1)
-                    fireDemon.y = random2
-                    fireDemon.x = random1
+                    if random1 == 1:
+                         print("Fire demon 1")
+                         random2 = randint(0, int(player.y))
+                         fireDemon.x = 0 - fireDemon.width
+                         fireDemon.y = random2
+                    elif random1 == 2:
+                         print("Fire demon 2")
+                         random2 = randint(-50, janela.width+1)
+                         fireDemon.y = 0 - fireDemon.height
+                         fireDemon.x = random2
+                    elif random1 == 3:
+                         print("Fire demon 3")
+                         random2 = randint(0, int(player.y))
+                         fireDemon.x = janela.width
+                         fireDemon.y = random2
                     listaFireDemons.append(fireDemon)
                elif (timerFase > 10) and (len(listaZumbisDireita)==0) and (len(listaZumbisEsquerda)==0) and (len(listaFireDemons)==0):
                     timerFimDaFase += janela.delta_time()
