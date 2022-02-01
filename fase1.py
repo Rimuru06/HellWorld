@@ -242,7 +242,7 @@ def fase1(janela, teclado, modulo, nivelDificuldade, vidasPlayer):
                     removerFireDemon = False
 
           if etapaFase == 1:
-               if player.x > janela.width:
+               if player.x + player.width >= janela.width:
                     etapaFase = 1.5
                     player.x = 0 - player.width*3
                     playerMovimentar = False
